@@ -52,34 +52,12 @@ You MUST provide your own IRIS license key files for the containers to work. Pla
 
 IMPORTANT: The iris.key files are intentionally excluded from git tracking for security.
 
-SSL CERTIFICATES (OPTIONAL)
----------------------------
-Users may supply their own valid SSL certificates and keys. Name and place these files as follows.
-
-For %SuperServer, under iris/:
-* sslauth.pem (CA certificate)
-* sslcert.pem (server certificate)
-* sslkey.pem (private key)
-
-For Web Gateway to IRIS connections, under webgateway/:
-* sslcliauth.pem (CA certificate)
-* sslclicert.pem (client certificate)
-* sslclikey.pem (private key)
-
-For browser to Web Gateway connections, under webgateway/:
-* sslwebcert.pem (web server certificate)
-* sslwebkey.pem (web server key)
-
-If SSL is not desired, remove the SSL-related sections from these files:
-* setup.sh (everything after the docker-compose commands)
-* webgateway/CSP.ini (under the LOCAL section, Connection_Security_Level and all the SSLCC_* fields)
-* webgateway/CSP.conf (everything under the SSL section)
 
 DEFAULT CREDENTIALS
 -------------------
 Default IRIS credentials (configured in docker-compose.yml):
   Username: superuser
-  Password: sys
+  Password: SYS
 
 The first time you access Management Portal, you will be prompted to set a new password for security. The provided CSP.ini uses CSPSystem/SYS to connect to IRIS. If you change CSPSystem's password in IRIS, update the server configuration in Web Gateway accordingly.
 
@@ -96,32 +74,3 @@ The .env file contains:
   WEBGTAG - Web Gateway container image tag
 
 --------------------------------------------------------------------
-
-NOTES FOR PODMAN:
-
-If using podman in lieu of docker, the demo works similarly, but requires the following special considerations for setup:
-
-- Podman must either use netavark as its backend or have the dnsname plugin installed for the cni backend.
-- Run "podman unshare chown 51773:51773" on the iris/ subdirectory to support durable sys. Alternatively, omit durable sys.
-- If SELinux is enforcing security on RHEL, add (uncomment) the "privileged: true" flag for each service in the docker-compose file.
-
-You will also need podman-compose/podman commands instead of docker-compose/docker in the setup and cleanup scripts, unless you use docker-to-podman aliasing.
-
---------------------------------------------------------------------
-
-SECURITY NOTE:
-
-This demo is simplified and for demonstration purposes only. It does not have production-level security as-is. For a more secure setup, users should make, at minimum, the following changes:
-
-- Do not use "*.*.*.*" for System_Manager; this grants all IP addresses access to Web Gateway Management.
-- Set a password other than "SYS" for all IRIS users, including CSPSystem.
-
-See Documentation (docs.intersystems.com) for further security guidance. In particular, look up Web Gateway security and IRIS container passwords, or follow these links:
-
-IRIS containers and password authentication: 
-https://docs.intersystems.com/irislatest/csp/docbook/DocBook.UI.Page.cls?KEY=ADOCK#ADOCK_iris_images_password_auth
- 
-Web Gateway security:
-https://docs.intersystems.com/irislatest/csp/docbook/DocBook.UI.Page.cls?KEY=ADOCK#ADOCK_iris_webgateway_security
- 
-
