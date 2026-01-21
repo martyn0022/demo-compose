@@ -38,3 +38,43 @@ This configuration allows you to access the **Management Portal via the Web Gate
 2. Run:
    ```bash
    ./setup.sh
+   - Builds and starts all containers
+   - Sets proper permissions on bind mounts
+3. Access the Management Portal at the URLs above
+4. To stop and clean up: ./cleanup.sh
+   - Stops and removes all containers
+   - Removes durable data directories
+   - Cleans up log files
+
+## LICENSE KEY PLACEMENT
+---------------------
+You MUST provide your own IRIS license key files for the containers to work. Place your iris.key files in the following locations:
+
+  ./iris/data-server/iris.key  - For the data server instance
+  ./iris/app-1/iris.key        - For application server 1
+  ./iris/app-2/iris.key        - For application server 2
+
+IMPORTANT: The iris.key files are intentionally excluded from git tracking for security.
+
+
+## DEFAULT CREDENTIALS
+-------------------
+Default IRIS credentials (configured in docker-compose.yml):
+  Username: superuser
+  Password: SYS
+
+The first time you access Management Portal, you will be prompted to set a new password for security. The provided CSP.ini uses CSPSystem/SYS to connect to IRIS. If you change CSPSystem's password in IRIS, update the server configuration in Web Gateway accordingly.
+
+## PORT MAPPINGS
+-------------
+See docker-compose.yml for the complete external port mappings. Change these if needed to avoid conflicts with other containers or instances on your machine.
+
+## CONFIGURATION
+-------------
+Ensure that you use a good IRIS kit version (set IRISTAG and WEBGTAG in .env file), that your Docker is up to date, and that Docker can read-write to the iris/ and webgateway/ subdirectories for durable storage.
+
+The .env file contains:
+  IRISTAG - IRIS container image tag
+  WEBGTAG - Web Gateway container image tag
+
+--------------------------------------------------------------------
