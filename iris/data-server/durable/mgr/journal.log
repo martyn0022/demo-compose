@@ -1,0 +1,6 @@
+Version=1.0
+Host=iris-data-server,/iris-shared/durable/mgr/
+Edition=1,1768997501,2026-01-21 12:11:41
+Base=0
+<EndOfHeader>
+,/iris-shared/durable/mgr/journal/20260121.001,1-7,5850A306-F6C2-11F0-9D9E-0E10233CF8FD,,2026-01-21 12:11:41,-1,7261

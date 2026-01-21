@@ -1,0 +1,128 @@
+services:
+  iris-data-server:
+    image: ${IRISTAG}
+    init: true
+    container_name: iris-data-server
+    hostname: iris-data-server
+    ports:
+      - "8881:1972"
+      - "52773:52773"
+    environment:
+      - ISC_DATA_DIRECTORY=/iris-shared/durable
+      - IRIS_USERNAME=superuser
+      - IRIS_PASSWORD=sys
+    volumes:
+      - type: bind
+        source: ./iris/data-server
+        target: /iris-shared
+    command: --key /iris-shared/iris.key
+
+  iris-app-1:
+    image: ${IRISTAG}
+    init: true
+    container_name: iris-app-1
+    hostname: iris-app-1
+    ports:
+      - "8884:1972"
+      - "52774:52773"
+    environment:
+      - ISC_DATA_DIRECTORY=/durable
+      - IRIS_USERNAME=superuser
+      - IRIS_PASSWORD=sys
+    volumes:
+      # ephemeral durable storage (does NOT create ./iris/app-1/durable)
+      - iris-app-1-durable:/durable
+      # mount only the key file from host
+      - type: bind
+        source: ./iris/app-1/iris.key
+        target: /usr/irissys/mgr/iris.key
+        read_only: true
+    command: --key /usr/irissys/mgr/iris.key
+    depends_on:
+      - iris-data-server
+
+  iris-app-2:
+    image: ${IRISTAG}
+    init: true
+    container_name: iris-app-2
+    hostname: iris-app-2
+    ports:
+      - "8885:1972"
+      - "52775:52773"
+    environment:
+      - ISC_DATA_DIRECTORY=/durable
+      - IRIS_USERNAME=superuser
+      - IRIS_PASSWORD=sys
+    volumes:
+      - iris-app-2-durable:/durable
+      - type: bind
+        source: ./iris/app-2/iris.key
+        target: /usr/irissys/mgr/iris.key
+        read_only: true
+    command: --key /usr/irissys/mgr/iris.key
+    depends_on:
+      - iris-data-server
+
+  # ------------------------
+  # Web Gateway instances (one per IRIS)
+  # ------------------------
+  webgateway-data:
+    image: ${WEBGTAG}
+    init: true
+    container_name: webgateway-data
+    hostname: webgateway-data
+    ports:
+      - "9080:80"
+      - "9443:443"
+    environment:
+      - ISC_DATA_DIRECTORY=/webgateway-shared/durable
+      - ISC_CSP_CONF_FILE=/webgateway-shared/CSP.conf
+      - ISC_CSP_INI_FILE=/webgateway-shared/CSP.ini
+    volumes:
+      - type: bind
+        source: ./webgateway/data
+        target: /webgateway-shared
+    depends_on:
+      - iris-data-server
+
+  webgateway-app-1:
+    image: ${WEBGTAG}
+    init: true
+    container_name: webgateway-app-1
+    hostname: webgateway-app-1
+    ports:
+      - "9081:80"
+      - "9444:443"
+    environment:
+      - ISC_DATA_DIRECTORY=/webgateway-shared/durable
+      - ISC_CSP_CONF_FILE=/webgateway-shared/CSP.conf
+      - ISC_CSP_INI_FILE=/webgateway-shared/CSP.ini
+    volumes:
+      - type: bind
+        source: ./webgateway/app-1
+        target: /webgateway-shared
+    depends_on:
+      - iris-app-1
+
+  webgateway-app-2:
+    image: ${WEBGTAG}
+    init: true
+    container_name: webgateway-app-2
+    hostname: webgateway-app-2
+    ports:
+      - "9082:80"
+      - "9445:443"
+    environment:
+      - ISC_DATA_DIRECTORY=/webgateway-shared/durable
+      - ISC_CSP_CONF_FILE=/webgateway-shared/CSP.conf
+      - ISC_CSP_INI_FILE=/webgateway-shared/CSP.ini
+    volumes:
+      - type: bind
+        source: ./webgateway/app-2
+        target: /webgateway-shared
+    depends_on:
+      - iris-app-2
+
+volumes:
+  iris-app-1-durable:
+  iris-app-2-durable:

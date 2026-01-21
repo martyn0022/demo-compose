@@ -1,0 +1,4 @@
+
+2026-01-21 12:11:43.980 HS.HC.Util.SystemStartup:CleanTempDirGlobals Starting HS.HC.Util.SystemStartup:CleanTempDirGlobals for namespace HSSYSLOCALTEMP
+2026-01-21 12:11:44.103 HS.HC.Util.SystemStartup:CleanTempGlobals Cleaned up 0 globals
+2026-01-21 12:11:44.103 HS.HC.Util.SystemStartup:CleanTempDirGlobals Finished HS.HC.Util.SystemStartup:CleanTempDirGlobals for namespace HSSYSLOCALTEMP
