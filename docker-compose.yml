@@ -6,7 +6,6 @@ services:
     hostname: iris-data-server
     ports:
       - "8881:1972"
-      - "52773:52773"
     environment:
       - ISC_DATA_DIRECTORY=/iris-shared/durable
       - IRIS_USERNAME=superuser
@@ -24,14 +23,10 @@ services:
     hostname: iris-app-1
     ports:
       - "8884:1972"
-      - "52774:52773"
     environment:
-      - ISC_DATA_DIRECTORY=/durable
       - IRIS_USERNAME=superuser
       - IRIS_PASSWORD=sys
     volumes:
-      # ephemeral durable storage (does NOT create ./iris/app-1/durable)
-      - iris-app-1-durable:/durable
       # mount only the key file from host
       - type: bind
         source: ./iris/app-1/iris.key
@@ -48,13 +43,10 @@ services:
     hostname: iris-app-2
     ports:
       - "8885:1972"
-      - "52775:52773"
     environment:
-      - ISC_DATA_DIRECTORY=/durable
       - IRIS_USERNAME=superuser
       - IRIS_PASSWORD=sys
     volumes:
-      - iris-app-2-durable:/durable
       - type: bind
         source: ./iris/app-2/iris.key
         target: /usr/irissys/mgr/iris.key
